@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'sam-app
+
+  Sample SAM Template for sam-app
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-codepipeline/10446fed9838cb6cd90ae63ea0790749
+      Handler: app.lambdaHandler
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+        - app.ts
+      SamResourceId: HelloWorldFunction
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: sam-app
+    Description: hello world
+    Author: unripe01
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: s3://aws-sam-codepipeline/5d41402abc4b2a76b9719d911017c592
+    ReadmeUrl: s3://aws-sam-codepipeline/07d46c0d4406b2ff3f18d0a424f87d5a
+    Labels:
+    - tests
+    HomePageUrl: https://github.com/Unripe01/aws-sam-codepipeline
+    SemanticVersion: '0.0.1'
+    SourceCodeUrl: https://github.com/Unripe01/aws-sam-codepipeline
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+  HelloWorldFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunction
+      - Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunctionRole
+      - Arn
